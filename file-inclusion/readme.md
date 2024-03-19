@@ -1,6 +1,6 @@
 # File inclusion
 
-Esse é um laboratório que é vulnerável. O foco dele é explorar a vulnerabilidade **file inclusion**.
+Esse laboratório é vulnerável, o foco dele é explorar a vulnerabilidade **file inclusion**, posteriormente criar uma correção para essa vulnerabilidade.
 
 ## Documentação do docker-compose.yml
 
