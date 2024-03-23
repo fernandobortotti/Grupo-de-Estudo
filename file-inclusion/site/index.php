@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Envio de Imagem - Laboratório sobre Vulnerabilidade de Inclusão de Arquivos</title>
+    <title>Escolha do Laboratório</title>
     <!-- Adicione a linkagem para o Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -20,27 +20,40 @@
             width: 100%;
             margin: auto;
         }
+        .lab-option {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center">Envio de Imagem - Laboratório sobre Vulnerabilidade de Inclusão de Arquivos</h1>
-        <form action="upload.php" method="post" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="fileToUpload">Selecione uma imagem para enviar:</label>
-                <input type="file" class="form-control-file" id="fileToUpload" name="fileToUpload">
+        <h1 class="text-center">Sobre a Vulnerabilidade de Inclusão de Arquivos</h1>
+        <p class="text-justify">A vulnerabilidade de inclusão de arquivos é uma falha de segurança que ocorre quando um aplicativo permite que um usuário inclua arquivos arbitrários em uma página da web ou em um script. Isso pode levar a ataques como a execução remota de código e a exposição de arquivos confidenciais.</p>
+        <p class="text-justify">Para se proteger contra essa vulnerabilidade, é importante validar e filtrar cuidadosamente todas as entradas de arquivo recebidas por meio do aplicativo, restringir o acesso a diretórios sensíveis e evitar a inclusão direta de arquivos do usuário sem verificação adequada.</p>
+        
+        <h2 class="text-center lab-option">Escolha do Laboratório</h2>
+        <p class="text-center lab-option">Criamos nesse laboratório dois casos, um com vulnerabilidade e outro sem. Para acessar o laboratório, escolha uma das opções e seja feliz!</p>
+        
+        <div class="row justify-content-center lab-option">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Laboratório sem Vulnerabilidade</h5>
+                        <p class="card-text">Escolha esta opção se você deseja acessar o laboratório sem a vulnerabilidade de inclusão de arquivos.</p>
+                        <a href="home.php" class="btn btn-primary btn-block">Acessar Laboratório</a>
+                    </div>
+                </div>
             </div>
-            <button type="submit" class="btn btn-primary">Enviar Imagem</button>
-        </form>
-        <?php
-        if (isset($_GET['success']) && $_GET['success'] == 'true') {
-            echo '<p class="text-success text-center mt-3">Imagem enviada com sucesso!</p>';
-        }
-        ?>
-        <hr>
-        <h2>Sobre a Vulnerabilidade de Inclusão de Arquivos</h2>
-        <p>A vulnerabilidade de inclusão de arquivos é uma falha de segurança que ocorre quando um aplicativo permite que um usuário inclua arquivos arbitrários em uma página da web ou em um script. Isso pode levar a ataques como a execução remota de código e a exposição de arquivos confidenciais.</p>
-        <p>Para se proteger contra essa vulnerabilidade, é importante validar e filtrar cuidadosamente todas as entradas de arquivo recebidas por meio do aplicativo, restringir o acesso a diretórios sensíveis e evitar a inclusão direta de arquivos do usuário sem verificação adequada.</p>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Laboratório com Vulnerabilidade</h5>
+                        <p class="card-text">Escolha esta opção se você deseja acessar o laboratório com a vulnerabilidade de inclusão de arquivos.</p>
+                        <a href="home-vul.php" class="btn btn-danger btn-block">Acessar Laboratório</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <!-- Adicione a linkagem para o Bootstrap JS -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

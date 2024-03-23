@@ -2,61 +2,82 @@
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["fileToUpload"])) {
     $targetDir = "uploads/";
     $targetFile = $targetDir . basename($_FILES["fileToUpload"]["name"]);
-    $uploadOk = 1;
-    $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
-    
-    // Verifica se o arquivo é uma imagem real ou uma imagem falsa
-    if (isset($_POST["submit"])) {
-        $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
-        if ($check !== false) {
-            $uploadOk = 1;
-        } else {
-            $errorMessage = "O arquivo enviado não é uma imagem.";
-            $uploadOk = 0;
-        }
-    }
-    
-    // Verifica se o arquivo já existe
-    if (file_exists($targetFile)) {
-        http_response_code(400);
-        header("Location: erro_ja_existe.php");
-        exit();
-    }
-    
-    // Verifica o tamanho do arquivo
-    if ($_FILES["fileToUpload"]["size"] > 5000000) {
-        $errorMessage = "Desculpe, sua imagem é muito grande.";
-        $uploadOk = 0;
-    }
-    
-    // Permitir apenas determinados formatos de arquivo
-    if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-    && $imageFileType != "gif") {
-        http_response_code(400);
+    $allowedTypes = array("image/png", "image/jpg", "image/jpeg", "image/gif");
+
+    // Valida o tipo de arquivo
+    if (!in_array($_FILES["fileToUpload"]["type"], $allowedTypes)) {
+        http_response_code(415);
         header("Location: error.php");
         exit();
     }
-    
-    // Verifica se $uploadOk está definido como 0 por algum erro
-    if ($uploadOk == 0) {
-        // Exibe mensagem de erro
-        http_response_code(400);
-        echo $errorMessage;
-    // Se tudo estiver correto, tenta enviar o arquivo
-    } else {
-        if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $targetFile)) {
-            // Redireciona para a página de sucesso
-            header("Location: index.php?success=true");
-            exit();
-        } else {
-            // Exibe mensagem de erro
-            http_response_code(500);
-            echo "Desculpe, ocorreu um erro ao enviar sua imagem.";
-        }
+
+
+    // Valida o tamanho do arquivo
+    if ($_FILES["fileToUpload"]["size"] > 5000000) {
+        http_response_code(413);
+        echo "Erro: Tamanho do arquivo excede o limite de 5MB.";
+        exit();
     }
+
+    // Valida a extensão do arquivo
+    $ext = pathinfo($_FILES["fileToUpload"]["name"], PATHINFO_EXTENSION);
+    if (!in_array($ext, array("png", "jpg", "jpeg", "gif"))) {
+        http_response_code(400);
+        echo "Erro: Extensão de arquivo inválida.";
+        exit();
+    }
+
+    function isFileNameValid($fileName) {
+        // Expressão regular para verificar se existe uma palavra entre os pontos
+        $regex = '/^[^.]+\.[^.]+\.[^.]+$/';
+      
+        return preg_match($regex, $fileName) === 1;
+      }
+      
+      // Valida o nome do arquivo
+      if (isFileNameValid($_FILES["fileToUpload"]["name"])) {
+        ?>
+    <script type="text/javascript">
+        alert(<?php echo json_encode("Erro: Nome do arquivo inválido. Não é permitido ter palavras entre os pontos."); ?>);
+        window.location.href = "/home.php";
+    </script>
+    <?php
+    exit();
+      }
+
+    // Sanitiza o nome do arquivo
+    // $fileName = filter_var($_FILES["fileToUpload"]["name"], FILTER_SANITIZE_FILENAME);
+
+    // // Gera um nome único para o arquivo
+    // if (empty($fileName)) {
+    //     $fileName = uniqid() . "." . $ext;
+    // }
+
+    // Move o arquivo temporário para o diretório de destino
+    if (!move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $targetFile)) {
+        http_response_code(500);
+        echo "Erro: Falha ao mover o arquivo para o servidor.";
+        exit();
+    }
+
+    // Exibe a mensagem de sucesso
+    http_response_code(200);
+
+    ?>
+    <script type="text/javascript">
+        alert(<?php echo json_encode("Arquivo enviado com sucesso!"); ?>);
+        window.location.href = "/home.php";
+    </script>
+    <?php
+    exit();
+
 } else {
-    // Exibe mensagem de erro se não houver arquivo enviado
-    http_response_code(400);
-    echo "Nenhum arquivo enviado.";
+
+    // Exibe o formulário de upload
+    http_response_code(200);
+    echo "<form action='upload.php' method='post' enctype='multipart/form-data'>
+        Selecione a imagem: <input type='file' name='fileToUpload'>
+        <input type='submit' value='Enviar'>
+    </form>";
+
 }
-?>
