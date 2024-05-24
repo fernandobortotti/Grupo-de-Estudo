@@ -5,17 +5,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["fileToUpload"])) {
     $uploadOk = 1;
     $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
     
-    // Verifica se o arquivo é uma imagem real ou uma imagem falsa
-    if (isset($_POST["submit"])) {
-        $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
-        if ($check !== false) {
-            $uploadOk = 1;
-        } else {
-            $errorMessage = "O arquivo enviado não é uma imagem.";
-            $uploadOk = 0;
-        }
-    }
-    
     // Verifica se o arquivo já existe
     if (file_exists($targetFile)) {
         http_response_code(400);
@@ -30,6 +19,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["fileToUpload"])) {
     }
     
     // Permitir apenas determinados formatos de arquivo
+    echo "$imageFileType";
+
     if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
     && $imageFileType != "gif") {
         http_response_code(400);
