@@ -6,4 +6,3 @@ Notas e exercícios da mentoria com o boot.
 
  - file-inclusion: diretório com lab que tem a vulnerabilidade LFI
  - calculamais: Diretório com uma aplicação em Django.
-
