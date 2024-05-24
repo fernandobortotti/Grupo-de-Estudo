@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Multiplicação</title>
+    <!-- Adicionando Bootstrap via CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+            color: white;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #000;
+        }
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 600px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 2rem;
+            border-radius: 10px;
+        }
+        .jumbotron {
+            background: transparent;
+        }
+        a {
+            color: #17a2b8;
+        }
+        #bgCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">CalculaMais</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'sum_form' %}">Soma</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'subtract_form' %}">Subtração</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'multiply_form' %}">Multiplicação</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'divide_form' %}">Divisão</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <canvas id="bgCanvas"></canvas>
+    <div class="container">
+        <div class="jumbotron text-center">
+            <h1 class="display-4">Multiplicação de números positivos</h1>
+            <form method="get" action="{% url 'multiply_form' %}">
+                <div class="form-group">
+                    <label for="num">Entre com os números separados com o sinal de mais (*):</label>
+                    <input type="text" id="num" name="nums" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Resultado</button>
+            </form>
+
+            {% if error_message %}
+            <hr class="my-4">
+            <div class="alert alert-danger" role="alert">
+                {{ error_message }}
+            </div>
+            {% endif %}
+
+            {% if result is not None %}
+                <hr class="my-4">
+                <h2>{{ result }}</h2>
+            {% endif %}
+        </div>
+    </div>
+     <!-- Adicionando Three.js via CDN -->
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+     <script>
+         let scene, camera, renderer, stars, starGeo;
+ 
+         function init() {
+             scene = new THREE.Scene();
+             camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 1, 1000);
+             camera.position.z = 400;
+ 
+             renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('bgCanvas'), alpha: true });
+             renderer.setSize(window.innerWidth, window.innerHeight);
+ 
+             starGeo = new THREE.BufferGeometry();
+             const starVertices = [];
+             for (let i = 0; i < 6000; i++) {
+                 const x = (Math.random() * 2 - 1) * 1000;
+                 const y = (Math.random() * 2 - 1) * 1000;
+                 const z = (Math.random() * 2 - 1) * 1000;
+                 starVertices.push(x, y, z);
+             }
+             starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
+ 
+             const sprite = new THREE.TextureLoader().load('https://threejs.org/examples/textures/sprites/disc.png');
+             const starMaterial = new THREE.PointsMaterial({
+                 color: 0xaaaaaa,
+                 size: 0.7,
+                 map: sprite,
+             });
+ 
+             stars = new THREE.Points(starGeo, starMaterial);
+             scene.add(stars);
+ 
+             window.addEventListener('resize', onWindowResize, false);
+ 
+             animate();
+         }
+ 
+         function onWindowResize() {
+             camera.aspect = window.innerWidth / window.innerHeight;
+             camera.updateProjectionMatrix();
+             renderer.setSize(window.innerWidth, window.innerHeight);
+         }
+ 
+         function animate() {
+             stars.rotation.y += 0.002;
+             renderer.render(scene, camera);
+             requestAnimationFrame(animate);
+         }
+ 
+         init();
+     </script>
+     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
