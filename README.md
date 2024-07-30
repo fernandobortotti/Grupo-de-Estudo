@@ -1,5 +1,4 @@
-# mentoria-boot
-
+# Grupo de Estudo
 Notas e exercícios da mentoria com o boot.
 
 ## Diretorios
